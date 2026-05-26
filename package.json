@@ -4,14 +4,14 @@
   "description": "Model Context Protocol server for IBM i (AS/400) DB2 databases — connects AI assistants to your IBM i data with role-based, read-only access.",
   "type": "module",
   "license": "Apache-2.0",
-  "author": "Robert",
-  "homepage": "https://github.com/TODO/mcp-server-db2i#readme",
+  "author": "Robert Sittig",
+  "homepage": "https://github.com/Sittlon/mcp-server-db2i#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/TODO/mcp-server-db2i.git"
+    "url": "https://github.com/Sittlon/mcp-server-db2i.git"
   },
   "bugs": {
-    "url": "https://github.com/TODO/mcp-server-db2i/issues"
+    "url": "https://github.com/Sittlon/mcp-server-db2i/issues"
   },
   "keywords": [
     "mcp",

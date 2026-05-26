@@ -21,7 +21,7 @@ Ask your AI: *"What were sales by region last week?"* — and it knows which tab
 
 ```bash
 # Install
-npm install mcp-server-db2i
+npm install
 
 # Create a config from the example
 cp config.example.json config/config.json
