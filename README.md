@@ -57,7 +57,7 @@ Copy `config.example.json` to `config/config.json`. The file has four sections:
 
 `${...}` placeholders are interpolated from environment variables at startup. Both `odbc` and `jt400` drivers are supported (jt400 is an optional dependency — install with `npm install jt400` if you prefer JDBC).
 
-> **Security tip.** Use a database user with **read-only privileges**. The role-based guard in this server is defense-in-depth, not a substitute for proper DB-level permissions.
+> Use a database user with **read-only privileges**. The role-based guard in this server is defense-in-depth, not a substitute for proper DB-level permissions.
 
 ### 2. Security (roles)
 
@@ -116,7 +116,7 @@ Use `npm run introspect -- --schema MYLIB` to auto-generate the structure, then 
 }
 ```
 
-Templates are safe, parameterized queries. Even `reader` roles can use them.
+> Templates are safe, parameterized queries. Even `reader` roles can use them.
 
 ## MCP tools exposed
 
