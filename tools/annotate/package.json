@@ -1,0 +1,17 @@
+{
+  "name": "db2i-annotate",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Optional LLM-based schema annotator for mcp-server-db2i. Provider-agnostic (Ollama / OpenAI-compatible / Anthropic).",
+  "type": "module",
+  "license": "Apache-2.0",
+  "bin": {
+    "db2i-annotate": "./annotate.ts"
+  },
+  "scripts": {
+    "start": "tsx annotate.ts"
+  },
+  "dependencies": {
+    "tsx": "^4.19.0"
+  }
+}

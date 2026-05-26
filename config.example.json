@@ -1,0 +1,98 @@
+{
+  "$schema": "./config.schema.json",
+
+  "connection": {
+    "driver": "odbc",
+    "odbc": {
+      "connectionString": "DSN=AS400;UID=READONLY_USER;PWD=${DB2I_PASSWORD}"
+    },
+    "jt400": {
+      "host": "as400.example.com",
+      "user": "READONLY_USER",
+      "password": "${DB2I_PASSWORD}",
+      "naming": "system"
+    }
+  },
+
+  "security": {
+    "defaultRole": "reader",
+    "roles": {
+      "reader": {
+        "allowRawSelect": false,
+        "allowedTemplates": ["*"],
+        "maxRows": 500,
+        "allowedSchemas": ["SAMPLE"]
+      },
+      "analyst": {
+        "allowRawSelect": true,
+        "allowedTemplates": ["*"],
+        "maxRows": 5000,
+        "allowedSchemas": ["SAMPLE", "QGPL"],
+        "blockedTables": ["USERS", "CREDENTIALS"]
+      },
+      "admin": {
+        "allowRawSelect": true,
+        "allowedTemplates": ["*"],
+        "maxRows": 50000,
+        "allowedSchemas": ["*"]
+      }
+    }
+  },
+
+  "schema": {
+    "tables": {
+      "SAMPLE.ORDERS": {
+        "description": "Sales orders — one row per line item",
+        "columns": {
+          "ORDNR":  { "description": "Order number", "type": "DECIMAL(10,0)" },
+          "CUSTID": { "description": "Customer ID (FK to SAMPLE.CUSTOMERS)", "type": "DECIMAL(8,0)" },
+          "ARTNR":  { "description": "Article / SKU", "type": "CHAR(15)" },
+          "QTY":    { "description": "Ordered quantity", "type": "DECIMAL(7,0)" },
+          "PRICE":  { "description": "Unit price (EUR)", "type": "DECIMAL(9,2)" },
+          "ODATE":  { "description": "Order date", "type": "DATE" },
+          "REGION": { "description": "Sales region (NORTH/SOUTH/EAST/WEST)", "type": "CHAR(5)" }
+        }
+      },
+      "SAMPLE.CUSTOMERS": {
+        "description": "Customer master data",
+        "columns": {
+          "CUSTID":  { "description": "Customer ID (primary key)", "type": "DECIMAL(8,0)" },
+          "CNAME":   { "description": "Customer display name", "type": "CHAR(60)" },
+          "COUNTRY": { "description": "ISO country code", "type": "CHAR(2)" },
+          "ACTIVE":  { "description": "1 = active, 0 = inactive", "type": "CHAR(1)" }
+        }
+      }
+    }
+  },
+
+  "templates": {
+    "orders_by_region": {
+      "description": "Order volume and revenue grouped by region for a date range",
+      "parameters": {
+        "from_date": { "type": "date", "description": "Start date (YYYY-MM-DD)" },
+        "to_date":   { "type": "date", "description": "End date (YYYY-MM-DD)" }
+      },
+      "sql": "SELECT REGION, SUM(QTY) AS units, SUM(QTY * PRICE) AS revenue FROM SAMPLE.ORDERS WHERE ODATE BETWEEN ? AND ? GROUP BY REGION ORDER BY revenue DESC",
+      "allowedRoles": ["reader", "analyst", "admin"]
+    },
+    "top_customers": {
+      "description": "Top customers by revenue in a date range",
+      "parameters": {
+        "from_date": { "type": "date", "description": "Start date (YYYY-MM-DD)" },
+        "to_date":   { "type": "date", "description": "End date (YYYY-MM-DD)" },
+        "limit":     { "type": "integer", "description": "Number of rows to return", "default": 10 }
+      },
+      "sql": "SELECT o.CUSTID, c.CNAME, SUM(o.QTY) AS units, SUM(o.QTY * o.PRICE) AS revenue FROM SAMPLE.ORDERS o JOIN SAMPLE.CUSTOMERS c ON o.CUSTID = c.CUSTID WHERE o.ODATE BETWEEN ? AND ? AND c.ACTIVE = '1' GROUP BY o.CUSTID, c.CNAME ORDER BY revenue DESC FETCH FIRST ? ROWS ONLY",
+      "allowedRoles": ["analyst", "admin"]
+    },
+    "recent_orders": {
+      "description": "Most recent orders for a given customer",
+      "parameters": {
+        "custid": { "type": "integer", "description": "Customer ID" },
+        "limit":  { "type": "integer", "description": "Number of rows", "default": 20 }
+      },
+      "sql": "SELECT ORDNR, ODATE, ARTNR, QTY, PRICE, REGION FROM SAMPLE.ORDERS WHERE CUSTID = ? ORDER BY ODATE DESC FETCH FIRST ? ROWS ONLY",
+      "allowedRoles": ["reader", "analyst", "admin"]
+    }
+  }
+}

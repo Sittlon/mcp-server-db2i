@@ -1,0 +1,238 @@
+{
+  "$ref": "#/definitions/Db2iMcpConfig",
+  "definitions": {
+    "Db2iMcpConfig": {
+      "type": "object",
+      "properties": {
+        "$schema": {
+          "type": "string"
+        },
+        "connection": {
+          "type": "object",
+          "properties": {
+            "driver": {
+              "type": "string",
+              "enum": [
+                "odbc",
+                "jt400"
+              ]
+            },
+            "odbc": {
+              "type": "object",
+              "properties": {
+                "connectionString": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "connectionString"
+              ],
+              "additionalProperties": false
+            },
+            "jt400": {
+              "type": "object",
+              "properties": {
+                "host": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "user": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "password": {
+                  "type": "string"
+                },
+                "naming": {
+                  "type": "string",
+                  "enum": [
+                    "system",
+                    "sql"
+                  ]
+                }
+              },
+              "required": [
+                "host",
+                "user",
+                "password"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "driver"
+          ],
+          "additionalProperties": false
+        },
+        "security": {
+          "type": "object",
+          "properties": {
+            "defaultRole": {
+              "type": "string",
+              "minLength": 1
+            },
+            "roles": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "allowRawSelect": {
+                    "type": "boolean"
+                  },
+                  "allowedTemplates": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "maxRows": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0
+                  },
+                  "allowedSchemas": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1
+                  },
+                  "blockedTables": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "allowRawSelect",
+                  "allowedTemplates",
+                  "maxRows",
+                  "allowedSchemas"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "defaultRole",
+            "roles"
+          ],
+          "additionalProperties": false
+        },
+        "schema": {
+          "type": "object",
+          "properties": {
+            "tables": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "description": {
+                    "type": "string"
+                  },
+                  "columns": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object",
+                      "properties": {
+                        "description": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "description",
+                        "type"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": [
+                  "description",
+                  "columns"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "tables"
+          ],
+          "additionalProperties": false
+        },
+        "templates": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "parameters": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "string",
+                        "integer",
+                        "date",
+                        "decimal"
+                      ]
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "default": {
+                      "type": [
+                        "string",
+                        "number"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "description"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "sql": {
+                "type": "string",
+                "minLength": 1
+              },
+              "allowedRoles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1
+              }
+            },
+            "required": [
+              "description",
+              "parameters",
+              "sql",
+              "allowedRoles"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "connection",
+        "security",
+        "schema",
+        "templates"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
