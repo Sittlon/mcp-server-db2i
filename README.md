@@ -35,7 +35,11 @@ cd tools/annotate && npx tsx annotate.ts --input ../../schema-introspected.json
 # (See tools/annotate/README.md for OpenAI / Anthropic / Ollama configuration)
 
 # Run the MCP server (stdio transport)
-npx mcp-server-db2i
+npm run dev                    # dev mode (tsx, no build)
+# or, after `npm run build`:
+npm start                      # = node dist/index.js
+# once published to npm, end users will run:
+# npx mcp-server-db2i
 ```
 
 ## Configuration
